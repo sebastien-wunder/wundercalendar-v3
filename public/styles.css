@@ -92,11 +92,12 @@ a{color:#f4c860}a:hover{color:#ffd98a}
 .back{transform:rotateY(180deg);background-color:#6b4423;background-image:repeating-linear-gradient(0deg,rgba(255,220,170,.07) 0 3px,rgba(0,0,0,.1) 3px 5px,rgba(255,220,170,0) 5px 11px),linear-gradient(90deg,#4f2c12,#7b4a24 40%,#5d3518);box-shadow:inset 0 0 0 3px #3b200c,inset 0 0 16px rgba(0,0,0,.55)}
 
 .hit{position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;border:0;border-radius:4px;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent;z-index:5;transition:box-shadow .2s,background-color .2s}
-.hit:hover{background-color:rgba(255,236,170,.1);box-shadow:inset 0 0 0 2px rgba(255,224,140,.75),inset 0 0 24px rgba(255,210,100,.4)}
+/* hover: a soft warm brightening only, no outline (the doors have their own painted frames) */
+.hit:hover{background-color:rgba(255,226,150,.14);box-shadow:inset 0 0 18px rgba(255,210,100,.35)}
 .hit:active{background-color:rgba(255,236,170,.18)}
 .hit:focus{outline:none}
 .hit:focus-visible{box-shadow:inset 0 0 0 3px #ffe08a,inset 0 0 0 6px rgba(10,19,48,.6)}
-.is-locked .hit:hover{background-color:rgba(220,230,255,.06);box-shadow:inset 0 0 0 2px rgba(220,230,255,.4)}
+.is-locked .hit:hover{background-color:rgba(220,230,255,.08);box-shadow:inset 0 0 14px rgba(220,230,255,.25)}
 .is-shake .hit{animation:lockPulse .45s ease}
 @keyframes lockPulse{0%,100%{background-color:rgba(220,230,255,0)}40%{background-color:rgba(220,230,255,.18)}}
 
