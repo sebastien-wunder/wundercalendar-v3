@@ -45,19 +45,22 @@ const ELF_DAY = 24;       /* this door's pop-up is held by the elf character */
    the page background and the source of each door face; the "open" picture
    (every niche showing its casino symbol) is the source of what each door
    reveals. Grid: left edge of each column, frame width, top edge of each row,
-   frame height, and pad = how far the door panel sits inside its gold frame
-   (the left pad clears the hinges) — in artwork pixels, measured from the
-   images. The panel is the clickable area, the swinging door and the
-   revealed niche; the frame stays part of the picture.
+   frame height, pad = thickness of the gold frame on each side (the window
+   compartment is the frame rectangle minus the pad) and hinge = width of the
+   hinge strip at the compartment's left edge — in artwork pixels, measured
+   from the images. The compartment is the clickable area, the swinging door
+   (hinges included) and the revealed niche, so nothing of the closed door
+   remains once it is open; the gold frame stays part of the picture. The hover
+   ring is inset past the hinges.
    ============================================================ */
 /* Landscape artwork 1672 × 941 */
 const IMG_W = 1672;
 const IMG_H = 941;
-const GRID = { colsL: [554, 701, 848, 995], w: 142, rowsT: [261, 362, 462, 563, 665, 769], h: 87, pad: { l: 16, t: 9, r: 28, b: 5 } };
+const GRID = { colsL: [554, 701, 848, 995], w: 142, rowsT: [261, 362, 462, 563, 665, 769], h: 87, pad: { l: 8, t: 9, r: 26, b: 6 }, hinge: 8 };
 /* Portrait artwork 941 × 1672 */
 const IMG_M_W = 941;
 const IMG_M_H = 1672;
-const GRID_M = { colsL: [110, 296, 489, 680], w: 156, rowsT: [482, 643, 802, 965, 1130, 1294], h: 136, pad: { l: 17, t: 13, r: 13, b: 8 } };
+const GRID_M = { colsL: [110, 296, 489, 680], w: 156, rowsT: [482, 643, 802, 965, 1130, 1294], h: 136, pad: { l: 14, t: 13, r: 10, b: 9 }, hinge: 8 };
 /* Twinkling bulbs: none mapped for this artwork (its lights are painted) */
 const BULBS_PX = [];
 const BULBS_M_PX = [];
@@ -116,12 +119,12 @@ function seeded(seed) {
   };
 }
 function pct(v, total) { return +(v / total * 100).toFixed(4); }
-/* The 24 door panels from the grid (frame rectangle minus the pad), row by row, left to right */
+/* The 24 compartments from the grid (frame rectangle minus the pad), row by row, left to right */
 function gridRects(grid) {
   const out = {}, p = grid.pad;
   let n = 1;
   grid.rowsT.forEach((t) => grid.colsL.forEach((l) => {
-    out[n++] = { x: l + p.l, y: Math.round(t) + p.t, w: grid.w - p.l - p.r, h: grid.h - p.t - p.b };
+    out[n++] = { x: l + p.l, y: Math.round(t) + p.t, w: grid.w - p.l - p.r, h: grid.h - p.t - p.b, hinge: grid.hinge };
   }));
   return out;
 }
@@ -136,6 +139,7 @@ function buildGeometry(rects, IMG_W, IMG_H) {
     out.push({
       day: day,
       l: pct(r.x, IMG_W), t: pct(r.y, IMG_H), w: pct(r.w, IMG_W), h: pct(r.h, IMG_H),
+      hinge: pct(r.hinge, r.w),
       bgs: (IMG_W / r.w * 100).toFixed(3) + '% ' + (IMG_H / r.h * 100).toFixed(3) + '%',
       bgp: (r.x / (IMG_W - r.w) * 100).toFixed(4) + '% ' + (r.y / (IMG_H - r.h) * 100).toFixed(4) + '%'
     });
@@ -319,7 +323,7 @@ function render() {
     });
     const slot = h('div', {
       class: doorClass(g.day, available),
-      style: 'left:' + g.l + '%;top:' + g.t + '%;width:' + g.w + '%;height:' + g.h + '%'
+      style: 'left:' + g.l + '%;top:' + g.t + '%;width:' + g.w + '%;height:' + g.h + '%;--hinge:' + g.hinge + '%'
     }, [interior, leaf, btn]);
     els.doors[g.day] = { slot: slot, btn: btn };
     stage.appendChild(slot);

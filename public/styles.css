@@ -89,9 +89,10 @@ a{color:#f4c860}a:hover{color:#ffd98a}
 .back{transform:rotateY(180deg);background-color:#6b4423;background-image:repeating-linear-gradient(0deg,rgba(255,220,170,.07) 0 3px,rgba(0,0,0,.1) 3px 5px,rgba(255,220,170,0) 5px 11px),linear-gradient(90deg,#4f2c12,#7b4a24 40%,#5d3518);box-shadow:inset 0 0 0 3px #3b200c,inset 0 0 16px rgba(0,0,0,.55)}
 
 .hit{position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;border:0;border-radius:3%/5%;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent;z-index:5}
-/* Hover/press highlight: an inset ring and glow drawn inside the panel itself,
-   clipped by the slot, so it never reaches the frame, hinges or neighbours. */
-.hit::before{content:"";position:absolute;inset:0;border-radius:3%/5%;background:rgba(255,226,150,.12);box-shadow:inset 0 0 0 2px rgba(255,224,140,.85),inset 0 0 14px rgba(255,210,100,.45);opacity:0;transition:opacity .2s;pointer-events:none}
+/* Hover/press highlight: an inset ring and glow drawn inside the door panel
+   (the compartment minus the hinge strip, --hinge), clipped by the slot, so it
+   never reaches the frame, hinges or neighbours. */
+.hit::before{content:"";position:absolute;inset:0;left:var(--hinge,0%);border-radius:3%/5%;background:rgba(255,226,150,.12);box-shadow:inset 0 0 0 2px rgba(255,224,140,.85),inset 0 0 14px rgba(255,210,100,.45);opacity:0;transition:opacity .2s;pointer-events:none}
 .hit:hover::before{opacity:1}
 .hit:active::before{background:rgba(255,226,150,.26)}
 .hit:focus{outline:none}
