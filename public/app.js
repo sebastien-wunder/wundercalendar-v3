@@ -114,12 +114,12 @@ function seeded(seed) {
   };
 }
 function pct(v, total) { return +(v / total * 100).toFixed(4); }
-/* The 24 window rectangles from the grid, row by row, left to right */
+/* The 24 door panels from the grid (frame rectangle minus the pad), row by row, left to right */
 function gridRects(grid) {
-  const out = {};
+  const out = {}, p = grid.pad;
   let n = 1;
   grid.rowsT.forEach((t) => grid.colsL.forEach((l) => {
-    out[n++] = { x: l, y: Math.round(t), w: grid.w, h: grid.h };
+    out[n++] = { x: l + p.l, y: Math.round(t) + p.t, w: grid.w - p.l - p.r, h: grid.h - p.t - p.b };
   }));
   return out;
 }
