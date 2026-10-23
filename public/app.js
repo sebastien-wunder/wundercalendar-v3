@@ -51,11 +51,11 @@ const ELF_DAY = 24;       /* this door's pop-up is held by the elf character */
 /* Landscape artwork 1672 × 941 */
 const IMG_W = 1672;
 const IMG_H = 941;
-const GRID = { colsL: [562, 709, 856, 1003], w: 137, rowsT: [266, 367.4, 468.8, 570.2, 671.6, 773], h: 80 };
+const GRID = { colsL: [554, 701, 848, 995], w: 142, rowsT: [261, 362, 462, 563, 665, 769], h: 87 };
 /* Portrait artwork 941 × 1672 */
 const IMG_M_W = 941;
 const IMG_M_H = 1672;
-const GRID_M = { colsL: [113, 303, 493, 683], w: 142, rowsT: [488, 652, 816, 980, 1144, 1308], h: 120 };
+const GRID_M = { colsL: [110, 296, 489, 680], w: 156, rowsT: [482, 643, 802, 965, 1130, 1294], h: 136 };
 /* Twinkling bulbs: none mapped for this artwork (its lights are painted) */
 const BULBS_PX = [];
 const BULBS_M_PX = [];
