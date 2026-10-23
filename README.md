@@ -4,17 +4,18 @@ Version 3 of the Christmas Advent Calendar: a dependency-free static site (vanil
 
 ## Structure
 - `public/` — the site: `index.html`, `styles.css`, `app.js`, `assets/`
-  - `backgrounds/calendar-desktop.{avif,webp}` (2000 × 1126, landscape) and `calendar-mobile.{avif,webp}` (1126 × 2000, portrait); AVIF is served where supported, WebP otherwise
-  - `sounds/gift-open.mp3`, played when a box opens
-  - `elf-top.avif` (pop-up for box 24), `fonts/`
+  - `backgrounds/calendar-desktop.{avif,webp}` (1672 × 941) and `calendar-mobile.{avif,webp}` (941 × 1672): the chalet with its 24 closed windows (page background and door faces)
+  - `backgrounds/calendar-desktop-open.{avif,webp}` and `calendar-mobile-open.{avif,webp}`: the same chalet with every window open, source of the symbol revealed behind each door
+  - `sounds/gift-open.mp3`, played when a window opens; `elf-top.avif` (pop-up for day 24); `fonts/`
+- `design/` — the supplied design references (not shipped)
 - `scripts/build.mjs` — copies `public/` to `dist/` and fails if a file is missing or an external/localhost reference appears
 - `scripts/serve.mjs` — tiny local static server
 
-## Gift box map
-The 24 boxes are part of the artwork. `app.js` holds one list per artwork (`PLATES_PX`, `PLATES_M_PX`) with the pixel rectangle of each box's gold number plate, measured from the image. Each plate is grown by `PLATE_GROW` to cover the box front; that rectangle, converted to percentages of the artwork, is both the clickable area and the opening lid. The artwork is always drawn at the stage's size with its own aspect ratio, so the areas stay aligned at any window size. Add `?debug=boxes` to the URL to outline them.
+## Window map
+The 24 windows form a regular 4 × 6 grid in both artworks. `app.js` holds one grid per orientation (`GRID`, `GRID_M`: column left edges, door width, row top edges, door height, in artwork pixels, measured from the images). Each window's rectangle, as percentages of the artwork, is the clickable area, the door face (cut from the closed picture) and the niche (cut from the open picture). Because the artwork is always drawn at the stage's size in its own aspect ratio, everything stays aligned at any window size. Add `?debug=boxes` to the URL to outline the windows.
 
 ## Opening sequence
-Click an unlocked box: the box front (cut from the artwork) swings up on its top edge and fades, the sound plays, a short burst of sparks flies out of the box, then the offer pop-up opens. Opened boxes show a lit interior with a golden star. Locked boxes flash and show a toast.
+Click an unlocked window: the door swings open on its left hinge and fades as it turns away, a warm glow flares, the sound plays, a few sparkles fly, and the casino symbol in the niche is revealed; then the offer pop-up opens. Opened windows stay open (and re-show their pop-up when clicked). Locked windows flash and show a toast.
 
 ## Develop
 Requires Node 18+. No `npm install` needed.

@@ -1,4 +1,4 @@
-/* WunderCalendar V2 — Christmas Advent Calendar — styles */
+/* WunderCalendar V3 — Christmas Advent Calendar — styles */
 /* Source Sans 3 (variable, wght 400-700), self-hosted — SIL OFL */
 @font-face{font-family:"Source Sans 3";font-style:normal;font-weight:400 700;font-display:swap;src:url(assets/fonts/SourceSans3-latin-ext.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}
 @font-face{font-family:"Source Sans 3";font-style:normal;font-weight:400 700;font-display:swap;src:url(assets/fonts/SourceSans3-latin.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
@@ -7,19 +7,20 @@ html,body{margin:0;padding:0;background:#0a1330}
 a{color:#f4c860}a:hover{color:#ffd98a}
 .adv-root *{box-sizing:border-box}
 /* ---------- Scene sizing ----------
-   Landscape artwork 2000 × 1126 (ratio 1.7762). The picture covers the window
-   (width = max(100vw, 177.62vh)) but is capped at 180vw / 192vh so the present
-   pyramid (x 27–71%, y 6–95% of the art) is never cropped: on very wide or very
-   tall windows the artwork is letterboxed and the gaps are filled by a blurred
-   copy of it. The stage is always centred in the window. */
-.adv-root{--sw:min(max(100vw,177.62vh),180vw,192vh);--sh:calc(var(--sw) * 0.563);--rh:100vh;position:relative;width:100%;height:var(--rh);overflow:hidden;background:#3a1208;container-type:size;container-name:adv}
-/* Portrait artwork 1126 × 2000 (ratio 0.563). It fills the whole screen, anchored
-   to the top, cropping at most 9% from each side (the presents span x 12–85%).
-   Only on unusually tall phones is it capped at 122vw, leaving a gap at the
-   bottom that the blurred copy fills. */
-.adv-root.lay-m{--sw:min(max(100vw,56.3vh),122vw);--sh:calc(var(--sw) * 1.7762)}
+   Landscape artwork 1672 × 941 (ratio 1.7768). The picture covers the window
+   (width = max(100vw, 177.68vh)) but is capped at 180vw / 185vh so the chalet
+   (x 27–72%, y 2–93% of the art) is never cropped: on very wide or very tall
+   windows the artwork is letterboxed and the gaps are filled by a blurred copy
+   of it. The stage is centred in the window. */
+.adv-root{--sw:min(max(100vw,177.68vh),180vw,185vh);--sh:calc(var(--sw) * 0.5628);--rh:100vh;position:relative;width:100%;height:var(--rh);overflow:hidden;background:#1b1446;container-type:size;container-name:adv}
+/* Portrait artwork 941 × 1672 (ratio 0.5628). The chalet and its lights reach
+   almost to both edges, so at most 3% may be trimmed per side (cap 106vw). It is
+   anchored to the top; on tall phones the leftover space is at the bottom only,
+   filled by the blurred copy. */
+.adv-root.lay-m{--sw:min(max(100vw,56.28vh),106vw);--sh:calc(var(--sw) * 1.7768)}
 .lay-m .adv-stage{top:0}
 .lay-m .adv-backdrop,.lay-m .crop{background-image:url(assets/backgrounds/calendar-mobile.webp);background-image:image-set(url(assets/backgrounds/calendar-mobile.avif) type("image/avif"),url(assets/backgrounds/calendar-mobile.webp) type("image/webp"))}
+.lay-m .crop-open{background-image:url(assets/backgrounds/calendar-mobile-open.webp);background-image:image-set(url(assets/backgrounds/calendar-mobile-open.avif) type("image/avif"),url(assets/backgrounds/calendar-mobile-open.webp) type("image/webp"))}
 .adv-wrap{position:absolute;inset:0;overflow:hidden}
 .adv-backdrop{position:absolute;inset:-60px;background:url(assets/backgrounds/calendar-desktop.webp) center/cover no-repeat;background-image:image-set(url(assets/backgrounds/calendar-desktop.avif) type("image/avif"),url(assets/backgrounds/calendar-desktop.webp) type("image/webp"));filter:blur(22px) brightness(.62) saturate(1.1);transform:scale(1.08);pointer-events:none}
 .adv-stage{position:absolute;left:50%;top:calc((100% - var(--sh)) / 2);width:var(--sw);height:var(--sh);transform:translateX(-50%);overflow:hidden;user-select:none;-webkit-user-select:none}
@@ -51,23 +52,21 @@ a{color:#f4c860}a:hover{color:#ffd98a}
    so the "door opens on…" toast appears mid-screen instead. */
 .lay-m .toast-region{bottom:auto;top:40%}
 
-/* ---------- Gift boxes ----------
-   Each box front (cut from the artwork) is a flap hinged along its top edge. On
-   opening it swings up and back into the box, inside its own frame (overflow
-   hidden, so it never covers a neighbour), fades, and leaves a lit interior
-   with a glowing golden star. */
-.slot{position:absolute;overflow:hidden;perspective:600px;z-index:2}
-/* The lit interior only exists once the box is open; at rest nothing covers the art. */
-.interior{position:absolute;inset:0;background:#2a0c0c;box-shadow:inset 0 0 0 2px #3d1313,inset 0 0 18px 6px rgba(0,0,0,.75);visibility:hidden}
+/* ---------- Windows ----------
+   Each window is a hinged door: its face is that rectangle of the "closed"
+   artwork, hinged on the left edge (where the hinges are painted). On opening
+   it swings out towards the viewer and fades as it passes the edge, inside its
+   own frame (overflow hidden, so it never covers a neighbour), revealing the
+   niche with the casino symbol: the same rectangle of the "open" artwork. A
+   warm glow flares as the door opens and settles to a soft light. */
+.slot{position:absolute;overflow:hidden;perspective:500px;z-index:2}
+/* The niche only exists once the window is open; at rest nothing covers the art. */
+.interior{position:absolute;inset:0;background-repeat:no-repeat;visibility:hidden}
+.crop-open{background-image:url(assets/backgrounds/calendar-desktop-open.webp);background-image:image-set(url(assets/backgrounds/calendar-desktop-open.avif) type("image/avif"),url(assets/backgrounds/calendar-desktop-open.webp) type("image/webp"))}
 .is-open .interior{visibility:visible}
-.glow{position:absolute;inset:0;background:radial-gradient(circle at 50% 52%,rgba(255,236,170,.95) 0%,rgba(247,188,78,.75) 20%,rgba(160,70,20,.45) 50%,rgba(40,14,5,0) 76%);opacity:0;transition:opacity .5s ease .25s}
-.is-open .glow{opacity:1}
-.is-done .glow{animation:glowPulse 2.8s ease-in-out infinite}
-@keyframes glowPulse{0%,100%{opacity:.8}50%{opacity:1}}
-.star{position:absolute;left:50%;top:50%;width:48%;height:48%;opacity:0;transform:translate(-50%,-50%) scale(.4) rotate(-30deg);transition:transform .6s cubic-bezier(.2,.9,.3,1.3) .3s,opacity .4s ease .3s;filter:drop-shadow(0 0 6px rgba(255,220,120,.95))}
-.is-open .star{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0)}
-.is-done .star{animation:starGlow 2.8s ease-in-out infinite}
-@keyframes starGlow{0%,100%{filter:drop-shadow(0 0 5px rgba(255,220,120,.8))}50%{filter:drop-shadow(0 0 14px rgba(255,226,140,1)) brightness(1.12)}}
+.glow{position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,rgba(255,240,180,.85) 0%,rgba(255,200,90,.45) 35%,rgba(255,170,60,0) 72%);mix-blend-mode:screen;opacity:0;pointer-events:none}
+.is-opening .glow{animation:glowFlare 1.1s ease-out .15s both}
+@keyframes glowFlare{0%{opacity:0}30%{opacity:1}100%{opacity:0}}
 .spark{position:absolute;width:13%;aspect-ratio:1/1;border-radius:50%;background:radial-gradient(circle,#fffbe8 0%,#ffd56b 35%,rgba(255,213,107,0) 70%);opacity:0;transform:scale(0)}
 .is-opening .spark{animation:spark 1s ease-out forwards}
 .spark.s1{left:18%;top:20%;animation-delay:.4s!important}
@@ -80,15 +79,17 @@ a{color:#f4c860}a:hover{color:#ffd98a}
 
 /* The flap is a copy of the artwork, so at rest it stays hidden (no seam over the
    picture); it appears only while the box is opening. */
-.leaf{position:absolute;inset:0;transform-origin:50% 0;transform-style:preserve-3d;transition:transform 750ms cubic-bezier(.3,.75,.25,1),opacity 260ms ease 520ms;pointer-events:none;visibility:hidden}
+.leaf{position:absolute;inset:0;transform-origin:0 50%;transform-style:preserve-3d;transition:transform 800ms cubic-bezier(.35,.8,.25,1),opacity 280ms ease 540ms;pointer-events:none;visibility:hidden}
 .is-opening .leaf{visibility:visible}
-.is-open .leaf{transform:rotateX(100deg);opacity:0}
+.is-open .leaf{transform:rotateY(-108deg);opacity:0}
 .is-done .leaf{visibility:hidden}
 .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden}
 .crop{background-image:url(assets/backgrounds/calendar-desktop.webp);background-image:image-set(url(assets/backgrounds/calendar-desktop.avif) type("image/avif"),url(assets/backgrounds/calendar-desktop.webp) type("image/webp"));background-repeat:no-repeat}
-.front::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.55));opacity:0;transition:opacity 750ms ease}
+/* the face darkens along its free edge as it turns away from the light */
+.front::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.05),rgba(0,0,0,.5));opacity:0;transition:opacity 800ms ease}
 .is-open .front::after{opacity:1}
-.back{transform:rotateX(180deg);background-color:#5a1515;background-image:linear-gradient(180deg,#6b1a1a,#3f0e0e);box-shadow:inset 0 0 0 3px #2d0909,inset 0 0 16px rgba(0,0,0,.55)}
+/* inside of the door, seen when it has swung past 90° */
+.back{transform:rotateY(180deg);background-color:#6b4423;background-image:repeating-linear-gradient(0deg,rgba(255,220,170,.07) 0 3px,rgba(0,0,0,.1) 3px 5px,rgba(255,220,170,0) 5px 11px),linear-gradient(90deg,#4f2c12,#7b4a24 40%,#5d3518);box-shadow:inset 0 0 0 3px #3b200c,inset 0 0 16px rgba(0,0,0,.55)}
 
 .hit{position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;border:0;border-radius:4px;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent;z-index:5;transition:box-shadow .2s,background-color .2s}
 .hit:hover{background-color:rgba(255,236,170,.1);box-shadow:inset 0 0 0 2px rgba(255,224,140,.75),inset 0 0 24px rgba(255,210,100,.4)}
@@ -184,9 +185,9 @@ a{color:#f4c860}a:hover{color:#ffd98a}
 .flake-deco{display:none}
 }
 @media (prefers-reduced-motion:reduce){
-.cta,.hit,.leaf,.glow,.star,.front::after{transition:none!important}
+.cta,.hit,.leaf,.glow,.front::after{transition:none!important}
 .burst{display:none}
-.bulb,.spark,.overlay,.dlg-wrap,.elf-top,.toast,.adv-root::after,.is-shake .hit,.is-done .glow,.is-done .star{animation:none!important}
+.bulb,.spark,.overlay,.dlg-wrap,.elf-top,.toast,.adv-root::after,.is-shake .hit,.is-opening .glow{animation:none!important}
 .snow{display:none}
 .bulb{opacity:.35}
 }

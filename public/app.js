@@ -1,4 +1,4 @@
-/* WunderCalendar V2 — Christmas Advent Calendar — vanilla JS, no dependencies. */
+/* WunderCalendar V3 — Christmas Advent Calendar — vanilla JS, no dependencies. */
 (function () {
 "use strict";
 
@@ -31,34 +31,34 @@ const CTA_LABEL = 'Spiele jetzt';
 const CTA_URL = 'https://www.wunderino.de/';
 
 const DOOR_COUNT = 24;
-const OPEN_MS = 780;      /* lid swing + fade (matches the CSS transitions) */
-const REVEAL_MS = 260;    /* pause on the fireworks before the offer appears */
-const BURST_AT_MS = 260;  /* fireworks start this long after the click */
+const OPEN_MS = 820;      /* door swing + fade (matches the CSS transitions) */
+const REVEAL_MS = 420;    /* time to admire the revealed symbol before the offer appears */
+const BURST_AT_MS = 380;  /* sparkles start this long after the click (as the door clears the niche) */
 const STORE_KEY = 'advent-opened-v1'; /* remembers opened doors in production mode */
 const TOAST_MS = 2800;
 const ELF_DAY = 24;       /* this door's pop-up is held by the elf character */
 
 /* ============================================================
-   GIFT BOX MAP
-   Each entry is the gold number plate of one box, [x0, y0, x1, y1] in pixels
-   of the artwork, boxes 1–24 in order (measured from the images). The
-   clickable area / opening lid is the plate grown by PLATE_GROW to cover the
-   box front. Add ?debug=boxes to the URL to outline the areas on screen.
+   WINDOW MAP
+   The chalet has 24 windows in a regular grid of 4 columns × 6 rows. Two
+   artworks share the same geometry: the "closed" picture (numbered doors) is
+   the page background and the source of each door face; the "open" picture
+   (every niche showing its casino symbol) is the source of what each door
+   reveals. Grid: left edge of each column, door width, top edge of each row,
+   door height — in artwork pixels, measured from the images. Add
+   ?debug=boxes to the URL to outline the windows on screen.
    ============================================================ */
-/* Desktop artwork 2000 × 1126 */
-const IMG_W = 2000;
-const IMG_H = 1126;
-const PLATES_PX = [[956,148,1040,254],[890,288,974,374],[1028,290,1110,376],[810,414,898,504],[968,412,1056,504],[1130,414,1214,508],[732,544,810,628],[868,538,958,634],[1014,538,1100,630],[1228,544,1304,626],[636,668,718,752],[792,666,876,756],[962,670,1038,752],[1136,666,1226,756],[1310,670,1396,752],[574,794,668,876],[756,804,852,896],[944,798,1036,884],[1124,792,1216,884],[1316,804,1404,892],[556,936,642,1026],[756,950,844,1042],[1006,942,1108,1056],[1228,942,1330,1046]];
-/* Mobile (portrait) artwork 1126 × 2000 */
-const IMG_M_W = 1126;
-const IMG_M_H = 2000;
-const PLATES_M_PX = [[516,646,602,734],[460,780,546,864],[584,782,668,860],[382,904,468,992],[532,902,614,990],[682,904,770,994],[304,1028,380,1100],[436,1026,522,1120],[574,1026,660,1116],[772,1032,860,1118],[208,1154,296,1240],[358,1154,446,1244],[520,1158,606,1236],[696,1154,780,1240],[854,1158,942,1238],[154,1280,242,1350],[328,1288,426,1366],[508,1284,602,1362],[686,1282,774,1378],[866,1288,958,1370],[136,1418,224,1510],[330,1432,424,1524],[572,1424,666,1532],[778,1422,876,1528]];
-/* How far the clickable box grows beyond its number plate, as fractions of the
-   plate size: left/right, up (towards the lid), down (to the box bottom). */
-const PLATE_GROW = { x: 0.22, up: 0.16, down: 0.22 };
-/* String-light bulbs that twinkle: [x, y, diameter] in artwork pixels */
-const BULBS_PX = [[964,56,34],[792,65,28],[994,75,36],[1036,79,26],[964,90,32],[1354,102,40],[1280,116,24],[1784,152,28],[1092,160,40],[1529,157,36],[589,162,28],[210,178,30],[362,199,34],[874,222,36],[667,221,20],[847,228,16]];
-const BULBS_M_PX = [[274,22,28],[369,86,36],[467,140,50],[1012,176,28],[569,186,38],[677,214,36],[1096,228,32],[1006,244,52],[480,303,36],[862,307,32],[971,315,30],[709,354,40],[608,367,32],[259,417,30],[522,499,30],[1015,525,28]];
+/* Landscape artwork 1672 × 941 */
+const IMG_W = 1672;
+const IMG_H = 941;
+const GRID = { colsL: [562, 709, 856, 1003], w: 137, rowsT: [266, 367.4, 468.8, 570.2, 671.6, 773], h: 80 };
+/* Portrait artwork 941 × 1672 */
+const IMG_M_W = 941;
+const IMG_M_H = 1672;
+const GRID_M = { colsL: [113, 303, 493, 683], w: 142, rowsT: [488, 652, 816, 980, 1144, 1308], h: 120 };
+/* Twinkling bulbs: none mapped for this artwork (its lights are painted) */
+const BULBS_PX = [];
+const BULBS_M_PX = [];
 
 /* ---------- Date logic ---------- */
 function getToday() {
@@ -114,19 +114,18 @@ function seeded(seed) {
   };
 }
 function pct(v, total) { return +(v / total * 100).toFixed(4); }
-/* Grow each number plate into the clickable box front (clamped to the artwork) */
-function boxRects(plates, imgW, imgH) {
+/* The 24 window rectangles from the grid, row by row, left to right */
+function gridRects(grid) {
   const out = {};
-  plates.forEach((p, i) => {
-    const w = p[2] - p[0], h = p[3] - p[1];
-    const x0 = Math.max(0, Math.round(p[0] - w * PLATE_GROW.x));
-    const x1 = Math.min(imgW, Math.round(p[2] + w * PLATE_GROW.x));
-    const y0 = Math.max(0, Math.round(p[1] - h * PLATE_GROW.up));
-    const y1 = Math.min(imgH, Math.round(p[3] + h * PLATE_GROW.down));
-    out[i + 1] = { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
-  });
+  let n = 1;
+  grid.rowsT.forEach((t) => grid.colsL.forEach((l) => {
+    out[n++] = { x: l, y: Math.round(t), w: grid.w, h: grid.h };
+  }));
   return out;
 }
+/* Percent geometry plus the background-size/position that shows exactly this
+   rectangle of a full artwork inside an element of the same shape (used to cut
+   the door face out of the closed picture and the niche out of the open one). */
 function buildGeometry(rects, IMG_W, IMG_H) {
   const out = [];
   for (let i = 0; i < DOOR_COUNT; i++) {
@@ -168,8 +167,8 @@ function buildBulbs(list, IMG_W, IMG_H, seed) {
     };
   });
 }
-const GEOMETRY = buildGeometry(boxRects(PLATES_PX, IMG_W, IMG_H), IMG_W, IMG_H);
-const GEOMETRY_M = buildGeometry(boxRects(PLATES_M_PX, IMG_M_W, IMG_M_H), IMG_M_W, IMG_M_H);
+const GEOMETRY = buildGeometry(gridRects(GRID), IMG_W, IMG_H);
+const GEOMETRY_M = buildGeometry(gridRects(GRID_M), IMG_M_W, IMG_M_H);
 const FLAKES = buildFlakes(70);
 const BULBS = buildBulbs(BULBS_PX, IMG_W, IMG_H, 1224);
 const BULBS_M = buildBulbs(BULBS_M_PX, IMG_M_W, IMG_M_H, 2412);
@@ -181,7 +180,8 @@ function detectLayout() {
 }
 
 
-/* Asset paths (relative to index.html). Scenes: AVIF first, WebP fallback. */
+/* Asset paths (relative to index.html). Scenes: AVIF first, WebP fallback.
+   The "open" pictures are referenced from styles.css (door niches). */
 const ASSETS = {
   sceneDesktop: 'assets/backgrounds/calendar-desktop.avif',
   sceneDesktopFallback: 'assets/backgrounds/calendar-desktop.webp',
@@ -280,7 +280,7 @@ function render() {
     h('source', { type: 'image/avif', srcset: mobile ? ASSETS.sceneMobile : ASSETS.sceneDesktop }),
     h('img', {
       src: mobile ? ASSETS.sceneMobileFallback : ASSETS.sceneDesktopFallback,
-      alt: 'A pyramid of 24 numbered Christmas presents in the snow, under strings of coloured lights',
+      alt: 'A snow-covered wooden Advent Calendar chalet with 24 numbered windows, in a Christmas village at dusk',
       draggable: 'false',
       decoding: 'async',
       fetchpriority: 'high'
@@ -300,12 +300,14 @@ function render() {
   const now = getToday();
   geometry.forEach((g) => {
     const available = isDoorAvailable(g.day, now);
-    const interior = h('div', { class: 'interior', 'aria-hidden': 'true' }, [
+    /* Behind the door: this window's niche with its casino symbol, cut from the
+       "open" artwork (same grid, so it lands exactly where the door was). */
+    const interior = h('div', { class: 'interior crop-open', 'aria-hidden': 'true', style: 'background-size:' + g.bgs + ';background-position:' + g.bgp }, [
       h('span', { class: 'glow' }),
-      starSvg('star'),
       h('span', { class: 'spark s1' }), h('span', { class: 'spark s2' }), h('span', { class: 'spark s3' }),
       h('span', { class: 'spark s4' }), h('span', { class: 'spark s5' }), h('span', { class: 'spark s6' })
     ]);
+    /* The door itself: the same rectangle of the "closed" artwork, hinged on its left */
     const leaf = h('div', { class: 'leaf', 'aria-hidden': 'true' }, [
       h('div', { class: 'face front crop', style: 'background-size:' + g.bgs + ';background-position:' + g.bgp }),
       h('div', { class: 'face back' })
