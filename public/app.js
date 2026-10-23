@@ -51,7 +51,7 @@ const ELF_DAY = 24;       /* this door's pop-up is held by the elf character */
 /* Landscape artwork 1672 × 941 */
 const IMG_W = 1672;
 const IMG_H = 941;
-const GRID = { colsL: [554, 701, 848, 995], w: 142, rowsT: [261, 362, 462, 563, 665, 769], h: 87, pad: { l: 10, t: 8, r: 0, b: 5 } };
+const GRID = { colsL: [554, 701, 848, 995], w: 142, rowsT: [261, 362, 462, 563, 665, 769], h: 87, pad: { l: 16, t: 9, r: 28, b: 5 } };
 /* Portrait artwork 941 × 1672 */
 const IMG_M_W = 941;
 const IMG_M_H = 1672;
