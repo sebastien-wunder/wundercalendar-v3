@@ -12,7 +12,7 @@ Version 3 of the Christmas Advent Calendar: a dependency-free static site (vanil
 - `scripts/serve.mjs` — tiny local static server
 
 ## Window map
-The 24 windows form a regular 4 × 6 grid in both artworks. `app.js` holds one grid per orientation (`GRID`, `GRID_M`: column left edges, door width, row top edges, door height, in artwork pixels, measured from the images). Each window's rectangle, as percentages of the artwork, is the clickable area, the door face (cut from the closed picture) and the niche (cut from the open picture). Because the artwork is always drawn at the stage's size in its own aspect ratio, everything stays aligned at any window size. Add `?debug=boxes` to the URL to outline the windows.
+The 24 windows form a regular 4 × 6 grid in both artworks. `app.js` holds one grid per orientation (`GRID`, `GRID_M`: column left edges, door width, row top edges, door height, in artwork pixels, measured from the images). Each window's rectangle, as percentages of the artwork, is the clickable area, the door face (cut from the closed picture) and the niche (cut from the open picture). Because the artwork is always drawn at the stage's size in its own aspect ratio, everything stays aligned at any window size.
 
 ## Opening sequence
 Click an unlocked window: the door swings open on its left hinge and fades as it turns away, a warm glow flares, the sound plays, a few sparkles fly, and the casino symbol in the niche is revealed; then the offer pop-up opens. Opened windows stay open (and re-show their pop-up when clicked). Locked windows flash and show a toast.

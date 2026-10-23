@@ -44,9 +44,11 @@ const ELF_DAY = 24;       /* this door's pop-up is held by the elf character */
    artworks share the same geometry: the "closed" picture (numbered doors) is
    the page background and the source of each door face; the "open" picture
    (every niche showing its casino symbol) is the source of what each door
-   reveals. Grid: left edge of each column, door width, top edge of each row,
-   door height — in artwork pixels, measured from the images. Add
-   ?debug=boxes to the URL to outline the windows on screen.
+   reveals. Grid: left edge of each column, frame width, top edge of each row,
+   frame height, and pad = how far the door panel sits inside its gold frame
+   (the left pad clears the hinges) — in artwork pixels, measured from the
+   images. The panel is the clickable area, the swinging door and the
+   revealed niche; the frame stays part of the picture.
    ============================================================ */
 /* Landscape artwork 1672 × 941 */
 const IMG_W = 1672;
@@ -191,8 +193,6 @@ const ASSETS = {
   doorSound: 'assets/sounds/gift-open.mp3'
 };
 
-/* ?debug=boxes outlines the clickable areas so the map can be checked against the art */
-const DEBUG_BOXES = /[?&]debug=boxes\b/.test(window.location.search);
 
 /* ============================================================
    DOM rendering (vanilla JS, no dependencies)
@@ -270,7 +270,7 @@ function render() {
   const mobile = state.layout === 'm';
   const geometry = mobile ? GEOMETRY_M : GEOMETRY;
   const bulbs = mobile ? BULBS_M : BULBS;
-  root.className = 'adv-root is-loading ' + (mobile ? 'lay-m' : 'lay-d') + (DEBUG_BOXES ? ' debug-boxes' : '');
+  root.className = 'adv-root is-loading ' + (mobile ? 'lay-m' : 'lay-d');
   root.innerHTML = '';
   els = { doors: {} };
 

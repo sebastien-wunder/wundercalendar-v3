@@ -45,9 +45,6 @@ a{color:#f4c860}a:hover{color:#ffd98a}
 @keyframes flash{0%{transform:translateY(-50%) scale(.3);opacity:0}25%{opacity:1}100%{transform:translateY(-50%) scale(1.6);opacity:0}}
 /* keep the test-mode buttons at the bottom on phones (the art's top is the sky) */
 .lay-m .test-bar{top:auto;bottom:12px}
-/* ?debug=boxes: outline every clickable area to check the map against the art */
-.debug-boxes .slot{outline:2px solid #00e5ff;outline-offset:-2px}
-.debug-boxes .hit::after{content:attr(data-day);position:absolute;left:2px;top:0;font:700 12px/1.4 system-ui,sans-serif;color:#00e5ff;text-shadow:0 0 3px #000}
 /* On phones the bottom edge is hidden by the browser toolbar and the test bar,
    so the "door opens on…" toast appears mid-screen instead. */
 .lay-m .toast-region{bottom:auto;top:40%}
