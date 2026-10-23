@@ -59,7 +59,7 @@ a{color:#f4c860}a:hover{color:#ffd98a}
    own frame (overflow hidden, so it never covers a neighbour), revealing the
    niche with the casino symbol: the same rectangle of the "open" artwork. A
    warm glow flares as the door opens and settles to a soft light. */
-.slot{position:absolute;overflow:hidden;perspective:500px;z-index:2;border-radius:5%/8%}
+.slot{position:absolute;overflow:hidden;perspective:500px;z-index:2;border-radius:3%/5%}
 /* The niche only exists once the window is open; at rest nothing covers the art. */
 .interior{position:absolute;inset:0;background-repeat:no-repeat;visibility:hidden}
 .crop-open{background-image:url(assets/backgrounds/calendar-desktop-open.webp);background-image:image-set(url(assets/backgrounds/calendar-desktop-open.avif) type("image/avif"),url(assets/backgrounds/calendar-desktop-open.webp) type("image/webp"))}
@@ -91,15 +91,15 @@ a{color:#f4c860}a:hover{color:#ffd98a}
 /* inside of the door, seen when it has swung past 90° */
 .back{transform:rotateY(180deg);background-color:#6b4423;background-image:repeating-linear-gradient(0deg,rgba(255,220,170,.07) 0 3px,rgba(0,0,0,.1) 3px 5px,rgba(255,220,170,0) 5px 11px),linear-gradient(90deg,#4f2c12,#7b4a24 40%,#5d3518);box-shadow:inset 0 0 0 3px #3b200c,inset 0 0 16px rgba(0,0,0,.55)}
 
-.hit{position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;border:0;border-radius:5%/8%;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent;z-index:5}
-/* Hover/press highlight: drawn inside the painted gold frame (inset by the frame
-   thickness, corners rounded like the panel), so it never crosses the window. */
-.hit::before{content:"";position:absolute;inset:8% 5%;border-radius:5%/8%;background:rgba(255,226,150,.16);box-shadow:inset 0 0 14px rgba(255,210,100,.45);opacity:0;transition:opacity .2s;pointer-events:none}
+.hit{position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;border:0;border-radius:3%/5%;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent;z-index:5}
+/* Hover/press highlight: an inset ring and glow drawn inside the panel itself,
+   clipped by the slot, so it never reaches the frame, hinges or neighbours. */
+.hit::before{content:"";position:absolute;inset:0;border-radius:3%/5%;background:rgba(255,226,150,.12);box-shadow:inset 0 0 0 2px rgba(255,224,140,.85),inset 0 0 14px rgba(255,210,100,.45);opacity:0;transition:opacity .2s;pointer-events:none}
 .hit:hover::before{opacity:1}
 .hit:active::before{background:rgba(255,226,150,.26)}
 .hit:focus{outline:none}
 .hit:focus-visible{box-shadow:inset 0 0 0 3px #ffe08a,inset 0 0 0 6px rgba(10,19,48,.6)}
-.is-locked .hit::before{background:rgba(220,230,255,.1);box-shadow:inset 0 0 12px rgba(220,230,255,.3)}
+.is-locked .hit::before{background:rgba(220,230,255,.08);box-shadow:inset 0 0 0 2px rgba(220,230,255,.5),inset 0 0 12px rgba(220,230,255,.3)}
 .is-shake .hit{animation:lockPulse .45s ease}
 @keyframes lockPulse{0%,100%{background-color:rgba(220,230,255,0)}40%{background-color:rgba(220,230,255,.18)}}
 
