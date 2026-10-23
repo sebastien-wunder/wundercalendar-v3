@@ -1,8 +1,8 @@
 {
-  "name": "wundercalendar-v2",
+  "name": "wundercalendar-v3",
   "version": "1.0.0",
   "private": true,
-  "description": "WunderCalendar V2 — Christmas Advent Calendar, dependency-free static site",
+  "description": "WunderCalendar V3 — Christmas Advent Calendar, dependency-free static site",
   "scripts": {
     "dev": "node scripts/serve.mjs",
     "build": "node scripts/build.mjs",
