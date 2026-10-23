@@ -181,8 +181,8 @@ function buildBulbs(list, IMG_W, IMG_H, seed) {
       x: pct(p[0], IMG_W), y: pct(p[1], IMG_H),
       s: pct(p[2] * 2.4, IMG_W),
       c: p[3] || '#ffd27a',
-      t: +(2.2 + rnd() * 2.6).toFixed(2),
-      d: +(rnd() * 5).toFixed(2)
+      t: +(0.9 + rnd() * 1.3).toFixed(2),
+      d: +(rnd() * 3).toFixed(2)
     };
   });
 }
