@@ -32,9 +32,13 @@ a{color:#f4c860}a:hover{color:#ffd98a}
 .adv-root.is-loading::after{opacity:1;animation:advSpin .9s linear infinite;transition-delay:.25s}
 @keyframes advSpin{to{transform:rotate(360deg)}}
 
-/* ---------- Christmas lights ---------- */
-.bulb{position:absolute;aspect-ratio:1/1;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;mix-blend-mode:screen;background:radial-gradient(circle,rgba(255,240,190,.95) 0%,rgba(255,200,95,.45) 32%,rgba(255,170,60,0) 70%);opacity:.2;animation-name:twinkle;animation-timing-function:ease-in-out;animation-iteration-count:infinite;animation-direction:alternate}
-@keyframes twinkle{0%{opacity:.05}55%{opacity:.55}100%{opacity:.85}}
+/* ---------- Christmas lights ----------
+   One soft glow per bulb (string lights on the chalet, tree lights and
+   baubles, lamps), in the bulb's own colour (--c), screen-blended over the
+   artwork so it only ever brightens. Each bulb breathes between dim and bright
+   on its own period and phase (set inline), with a faint swell in size. */
+.bulb{position:absolute;aspect-ratio:1/1;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;mix-blend-mode:screen;background:radial-gradient(circle,rgba(255,255,255,.9) 0%,var(--c,#ffd27a) 26%,transparent 68%);opacity:.2;will-change:opacity,transform;animation-name:twinkle;animation-timing-function:ease-in-out;animation-iteration-count:infinite;animation-direction:alternate}
+@keyframes twinkle{0%{opacity:.12;transform:translate(-50%,-50%) scale(.9)}55%{opacity:.45;transform:translate(-50%,-50%) scale(1)}100%{opacity:.7;transform:translate(-50%,-50%) scale(1.08)}}
 
 /* ---------- Chimney smoke ----------
    Soft puffs are born at the chimney mouth, swell as they rise, waver gently

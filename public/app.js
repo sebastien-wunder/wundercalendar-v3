@@ -67,9 +67,12 @@ const SMOKE = { x: 64.1, y: 6.0, w: 5.2 };
 const SMOKE_M = { x: 84.6, y: 10.8, w: 11 };
 const SMOKE_PUFFS = 14;
 const SMOKE_CYCLE = 11; /* seconds — keep in sync with .puff animation-duration in styles.css */
-/* Twinkling bulbs: none mapped for this artwork (its lights are painted) */
-const BULBS_PX = [];
-const BULBS_M_PX = [];
+/* Twinkling lights: the string lights around the chalet, the tree lights and
+   baubles and the street lamps — [x, y, diameter, colour] in artwork pixels,
+   measured from the images (the window grid, holly berries, gifts and the
+   neighbouring houses' windows are deliberately left out). */
+const BULBS_PX = [[833,58,14,'#ea1d15'],[898,95,14,'#feed64'],[767,95,14,'#feee58'],[933,115,19,'#ea1811'],[730,116,17,'#ec1912'],[654,163,14,'#eb1610'],[1014,163,15,'#eb1611'],[938,171,11,'#ea261b'],[729,171,9,'#eb2213'],[1055,190,14,'#fdeb52'],[610,192,13,'#feeb56'],[573,216,14,'#e91913'],[497,265,12,'#feea61'],[1173,265,13,'#feea5c'],[510,344,15,'#ea1a0e'],[1158,344,15,'#ea2113'],[510,379,13,'#fde85a'],[1158,379,14,'#feee53'],[510,445,15,'#e8180d'],[1157,446,14,'#ed2116'],[1219,444,7,'#feeca3'],[1228,452,12,'#feeca1'],[1187,458,13,'#feefa7'],[398,477,8,'#e57404'],[510,482,13,'#feea5c'],[1157,482,14,'#feed54'],[354,510,18,'#fef29f'],[369,514,8,'#fee29a'],[510,551,15,'#ea1d13'],[1158,552,15,'#ec1f15'],[1197,554,18,'#fee883'],[453,557,16,'#fde58e'],[475,557,9,'#feeba3'],[392,560,12,'#e61d23'],[440,570,8,'#ef5112'],[1255,574,9,'#ffeba3'],[510,586,13,'#fee956'],[1158,586,13,'#feec57'],[1255,584,8,'#ffeaa3'],[345,603,7,'#fef092'],[351,607,8,'#f1690f'],[422,610,11,'#fbe964'],[367,615,12,'#e72418'],[392,613,7,'#feef8f'],[510,657,15,'#e8180f'],[1158,657,14,'#ea1e14'],[349,679,14,'#eb1410'],[414,676,7,'#feea6c'],[1158,695,14,'#feed59'],[510,695,13,'#fdea65'],[509,767,16,'#eb1611'],[1158,768,14,'#eb1b14'],[510,804,14,'#feec59'],[1158,805,13,'#feef56']];
+const BULBS_M_PX = [[563,236,20,'#feec3d'],[388,238,20,'#fdee41'],[384,253,8,'#de7303'],[613,267,21,'#f0100b'],[338,268,21,'#ef130c'],[288,302,17,'#0acb88'],[713,337,24,'#eb140b'],[237,336,20,'#ef130e'],[894,345,19,'#feeea1'],[769,377,20,'#fdeb43'],[133,414,20,'#ee100c'],[818,414,20,'#ee0f0c'],[34,489,19,'#fdef47'],[910,488,19,'#fdee42'],[14,593,29,'#fdeb8c'],[55,605,23,'#ee1309'],[886,604,23,'#ee1208'],[55,653,20,'#fdee41'],[886,652,19,'#fded40'],[927,661,13,'#fee28d'],[55,751,24,'#ed160a'],[886,751,23,'#ef140a'],[55,807,21,'#fdee43'],[886,807,20,'#fded41'],[886,856,19,'#0bd58a'],[13,897,30,'#fdee80'],[886,906,23,'#f0150a'],[55,907,22,'#ef150a'],[926,913,31,'#fdef7a'],[55,958,20,'#fded40'],[886,957,19,'#feed3e'],[886,1062,24,'#ef1409'],[55,1064,23,'#f0160a'],[55,1119,20,'#fdee3f'],[886,1118,19,'#fded3d'],[18,1143,9,'#e84921'],[885,1170,17,'#0acf8b'],[55,1223,22,'#ee1108'],[886,1222,22,'#ee1509'],[27,1237,16,'#ef2f2a'],[919,1246,8,'#e94036'],[28,1266,9,'#ef2538'],[922,1271,13,'#fce89a'],[55,1283,21,'#fdee40'],[886,1282,20,'#fdec3f'],[938,1286,10,'#ee5220'],[885,1390,34,'#ea4902'],[56,1392,34,'#e93f02'],[886,1394,18,'#fded45'],[55,1395,18,'#fdec41'],[933,1423,12,'#ee2715']];
 
 /* ---------- Date logic ---------- */
 function getToday() {
@@ -168,14 +171,18 @@ function buildFlakes(n) {
   }
   return out;
 }
+/* Bulbs: [x, y, diameter, colour] in artwork pixels. The glow is drawn about
+   2.4× the bulb so it haloes softly; each bulb gets its own period and phase
+   from a seeded generator, so the twinkling never lines up. */
 function buildBulbs(list, IMG_W, IMG_H, seed) {
   const rnd = seeded(seed);
   return list.map(function (p) {
     return {
       x: pct(p[0], IMG_W), y: pct(p[1], IMG_H),
-      s: p[2] ? pct(p[2], IMG_W) : +(1.1 + rnd() * 1.3).toFixed(2),
-      t: +(1.8 + rnd() * 2.4).toFixed(2),
-      d: +(rnd() * 4).toFixed(2)
+      s: pct(p[2] * 2.4, IMG_W),
+      c: p[3] || '#ffd27a',
+      t: +(2.2 + rnd() * 2.6).toFixed(2),
+      d: +(rnd() * 5).toFixed(2)
     };
   });
 }
@@ -316,7 +323,7 @@ function render() {
   const lights = h('div', { 'aria-hidden': 'true' });
   bulbs.forEach((b) => lights.appendChild(h('span', {
     class: 'bulb',
-    style: 'left:' + b.x + '%;top:' + b.y + '%;width:' + b.s + '%;animation-duration:' + b.t + 's;animation-delay:-' + b.d + 's'
+    style: 'left:' + b.x + '%;top:' + b.y + '%;width:' + b.s + '%;--c:' + b.c + ';animation-duration:' + b.t + 's;animation-delay:-' + b.d + 's'
   })));
   stage.appendChild(lights);
 
