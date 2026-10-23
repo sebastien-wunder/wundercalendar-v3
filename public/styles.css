@@ -36,6 +36,31 @@ a{color:#f4c860}a:hover{color:#ffd98a}
 .bulb{position:absolute;aspect-ratio:1/1;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;mix-blend-mode:screen;background:radial-gradient(circle,rgba(255,240,190,.95) 0%,rgba(255,200,95,.45) 32%,rgba(255,170,60,0) 70%);opacity:.2;animation-name:twinkle;animation-timing-function:ease-in-out;animation-iteration-count:infinite;animation-direction:alternate}
 @keyframes twinkle{0%{opacity:.05}55%{opacity:.55}100%{opacity:.85}}
 
+/* ---------- Chimney smoke ----------
+   Soft puffs are born at the chimney mouth, swell as they rise, waver gently
+   left and right in the cold air and thin out until they vanish about four
+   plume-widths up. Transform/opacity only (compositor-friendly); the softness
+   comes from the gradient, no filters. The painted wisp in the artwork stays
+   underneath as the plume's faint core. */
+.smoke{position:absolute;aspect-ratio:1/1;transform:translate(-50%,-55%);pointer-events:none;z-index:1}
+.puff{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.95) 0%,rgba(250,248,252,.7) 30%,rgba(225,222,235,.3) 58%,rgba(215,212,228,0) 70%);opacity:0;will-change:transform,opacity;animation-duration:11s;animation-timing-function:linear;animation-iteration-count:infinite}
+.puff.pa{animation-name:smokeA}
+.puff.pb{animation-name:smokeB;border-radius:46% 54% 50% 50%/58% 42% 58% 42%}
+@keyframes smokeA{
+0%{transform:translate(0,12%) scale(.28);opacity:0}
+7%{transform:translate(1%,-14%) scale(.42);opacity:.5}
+25%{transform:translate(8%,-78%) scale(.7);opacity:.44}
+50%{transform:translate(-6%,-170%) scale(1.05);opacity:.3}
+75%{transform:translate(12%,-270%) scale(1.45);opacity:.14}
+100%{transform:translate(28%,-380%) scale(1.9);opacity:0}}
+@keyframes smokeB{
+0%{transform:translate(0,12%) scale(.26) rotate(0deg);opacity:0}
+7%{transform:translate(-2%,-16%) scale(.4) rotate(8deg);opacity:.46}
+25%{transform:translate(-9%,-80%) scale(.68) rotate(25deg);opacity:.4}
+50%{transform:translate(5%,-172%) scale(1) rotate(50deg);opacity:.27}
+75%{transform:translate(-4%,-272%) scale(1.4) rotate(75deg);opacity:.12}
+100%{transform:translate(18%,-382%) scale(1.85) rotate(100deg);opacity:0}}
+
 /* ---------- Fireworks (on opening) ---------- */
 .burst{position:absolute;z-index:7;pointer-events:none}
 .burst i{position:absolute;left:50%;top:22%;width:calc(7px * var(--s));height:calc(7px * var(--s));margin:calc(-3.5px * var(--s)) 0 0 calc(-3.5px * var(--s));border-radius:50%;background:var(--c);box-shadow:0 0 6px 1px var(--c);opacity:0;will-change:transform,opacity;animation:burst .95s cubic-bezier(.15,.85,.3,1) var(--t) both}
@@ -188,6 +213,7 @@ a{color:#f4c860}a:hover{color:#ffd98a}
 @media (prefers-reduced-motion:reduce){
 .cta,.hit,.leaf,.glow,.front::after{transition:none!important}
 .burst{display:none}
+.puff{animation-play-state:paused!important}
 .bulb,.spark,.overlay,.dlg-wrap,.elf-top,.toast,.adv-root::after,.is-shake .hit,.is-opening .glow{animation:none!important}
 .snow{display:none}
 .bulb{opacity:.35}

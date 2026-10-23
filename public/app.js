@@ -61,6 +61,12 @@ const GRID = { colsL: [554, 701, 848, 995], w: 142, rowsT: [261, 362, 462, 563, 
 const IMG_M_W = 941;
 const IMG_M_H = 1672;
 const GRID_M = { colsL: [110, 296, 489, 680], w: 156, rowsT: [482, 643, 802, 965, 1130, 1294], h: 136, pad: { l: 14, t: 13, r: 10, b: 9 }, hinge: 8 };
+/* Chimney mouth, as percentages of the artwork: where the smoke rises from, and
+   the width of the plume's base (one puff) relative to the artwork width. */
+const SMOKE = { x: 64.1, y: 6.0, w: 5.2 };
+const SMOKE_M = { x: 84.6, y: 10.8, w: 11 };
+const SMOKE_PUFFS = 14;
+const SMOKE_CYCLE = 11; /* seconds — keep in sync with .puff animation-duration in styles.css */
 /* Twinkling bulbs: none mapped for this artwork (its lights are painted) */
 const BULBS_PX = [];
 const BULBS_M_PX = [];
@@ -293,6 +299,19 @@ function render() {
   const scene = picture.lastChild;
   stage.appendChild(picture);
   waitForScene(scene);
+
+  /* Chimney smoke: SMOKE_PUFFS overlapping puffs share one SMOKE_CYCLE-second
+     loop, each offset by an equal share of it, so the plume never visibly
+     restarts. Anchored on the chimney mouth in artwork percentages. */
+  const sm = mobile ? SMOKE_M : SMOKE;
+  const smoke = h('div', { class: 'smoke', 'aria-hidden': 'true', style: 'left:' + sm.x + '%;top:' + sm.y + '%;width:' + sm.w + '%' });
+  for (let i = 0; i < SMOKE_PUFFS; i++) {
+    smoke.appendChild(h('span', {
+      class: 'puff ' + (i % 2 ? 'pb' : 'pa'),
+      style: 'animation-delay:-' + (i * SMOKE_CYCLE / SMOKE_PUFFS).toFixed(3) + 's'
+    }));
+  }
+  stage.appendChild(smoke);
 
   const lights = h('div', { 'aria-hidden': 'true' });
   bulbs.forEach((b) => lights.appendChild(h('span', {
